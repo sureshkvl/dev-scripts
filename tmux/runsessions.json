@@ -1,0 +1,10 @@
+{
+	"tmux":	
+	{
+		"session_name" : "session3",
+		"windows": [
+			{"name": "window1", "execute": "\"ping  google.com\""},
+			{"name": "window2", "execute": "\"ping  yahoo.com\""}
+		]
+	}
+}

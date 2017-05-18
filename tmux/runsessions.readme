@@ -1,0 +1,17 @@
+runsessions.py:
+
+Simple script, which takes input as JSON file(sample file runsessions.json in the same folder), and creates a session, and windows and execture the commands in the windows.
+
+How to run :
+
+python runsessions.py -I runsessions.json
+
+
+Commands used in the script:
+
+1.tmux new-session -s mysession -d
+2.tmux rename-window -t mysession "window0"
+3.tmux new-window -t mysession:1 -n "window1"
+4.tmux send-keys -t mysession:1 "ping google.com" C-m
+5.tmux attach-session -t session2
+6.tmux kill-session -t mysession
