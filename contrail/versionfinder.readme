@@ -1,0 +1,12 @@
+Simple script to find the contrail versions.
+REST API to contrail analytics and collect the vesions of all the nodes.
+
+
+Example:
+
+$ python versionsfinder.py -I <ip>
+[{'vrouter-agent': u'{"build-info":[{"build-time":"2017-05-10 20:50:29.452636","build-hostname":"buildvm","build-user":"cloud","build-version":"3.2.3.0","build-id":"1.1master~96e7f26","build-number":"1.1master~96e7f26"}]}', 'vrouter': u'{"build-info": [{"build-time": "2017-05-11 07:46:38.578208", "build-hostname": "buildvm", "build-user": "cloud", "build-version": "3.2.3.0"}]}'}]
+[{'control-node': u'{"build-info":[{"build-time":"2017-05-11 07:30:48.923219","build-hostname":"buildvm","build-user":"cloud","build-version":"3.2.3.0","build-id":"1.1master~96e7f26","build-number":"1.1master~96e7f26"}]}'}]
+[{'config-node': u'{"build-info" : [{"build-version" : "3.2.3.0", "build-time" : "2017-05-11 07:19:18.634660", "build-user" : "cloud", "build-hostname" : "buildvm", "build-id" : "1.1master~96e7f26", "build-number" : "1.1master~96e7f26"}]}'}]
+[{'analytics-node': u'{"build-info":[{"build-time":"2017-05-10 20:54:16.728677","build-hostname":"buildvm","build-user":"cloud","build-version":"3.2.3.0","build-id":"1.1master~96e7f26","build-number":"1.1master~96e7f26"}]}'}]
+[{'dns-node': u'{"build-info":[{"build-time":"2017-05-10 20:08:20.881527","build-hostname":"buildvm","build-user":"cloud","build-version":"3.2.3.0","build-id":"1.1master~96e7f26","build-number":"1.1master~96e7f26"}]}'}]
