@@ -66,7 +66,7 @@ def vouter_uves(analytics_ip):
 def process_args(argv):
     parser = argparse.ArgumentParser("contrail Vrouter Stats script ")
     parser.add_argument("-I", "--analytics-ip",  help="Analytics node IP, no PORT required", required=True)
-    parser.add_argument("-P", "--poll-interval",  help="Poll Interval in sec", required=True)    
+    parser.add_argument("-P", "--poll-interval",type=int,help="Poll Interval in sec", required=True)    
     options = parser.parse_args()
     return options
 
