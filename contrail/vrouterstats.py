@@ -20,8 +20,15 @@ logging.basicConfig(stream=sys.stdout, filename='vrouter_stats.log',level=loggin
 def phy_stats():
     pass
 
+
+def cpu_stats(vrouters):
+    for vrouter in vrouters:
+        logging.info('CPU Stats ')
+        logging.info('cpu_info  %s ' % vrouter['cpu_info'])
+
+
 def vhost_stats(vrouters):
- for vrouter in vrouters:
+    for vrouter in vrouters:
         logging.info('Vrouter Vhost Stats ')
         logging.info(" Uptime  %s" % vrouter['uptime'])
         logging.info(" in_pkts  %s" % vrouter['vhost_stats']['in_pkts'])
@@ -59,6 +66,7 @@ def vouter_uves(analytics_ip):
 def process_args(argv):
     parser = argparse.ArgumentParser("contrail Vrouter Stats script ")
     parser.add_argument("-I", "--analytics-ip",  help="Analytics node IP, no PORT required", required=True)
+    parser.add_argument("-P", "--poll-interval",  help="Poll Interval in sec", required=True)    
     options = parser.parse_args()
     return options
 
@@ -73,7 +81,8 @@ def main(argv):
         x = vouter_uves(options.analytics_ip)
         vrouter_stats(x)
         vhost_stats(x)
-        time.sleep(30)
+        cpu_stats(x)
+        time.sleep(options.poll_interval)
 
 if __name__ == "__main__":
     main(sys.argv)
