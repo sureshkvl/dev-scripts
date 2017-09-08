@@ -88,6 +88,7 @@ def process_args(argv):
     parser.add_argument("-I", "--analytics-ip",  help="Analytics node IP, no PORT required", required=True)
     parser.add_argument("-P", "--poll-interval", type=int, default=30, help="Poll Interval in sec", required=True)    
     options = parser.parse_args()
+    
     return options
 
 def main(argv):
