@@ -1,5 +1,6 @@
+import os
 import sys
-import psutil
+#import psutil
 import argparse
 from threading import Timer
 from time import sleep
@@ -72,6 +73,27 @@ def cpu_measure(i):
         Result.append(res)
     writefile("cpuutilization.result", str(Result))
 
+
+def cpu_measure2():
+    localtime = time.asctime(time.localtime(time.time()))
+    tot_m, used_m, free_m = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
+    # print "Total Mem", tot_m
+    # print "Used Mem", used_m
+    # print "Free Mem",free_m
+
+    nproc = os.popen('nproc').readlines()[-1].split()[0]
+    #nproc.rstrip()
+    # print "Number of CPU cores", nproc
+
+    onemin, fivemin, tenmin, num_p, l_pid = map(str, os.popen('cat /proc/loadavg').readlines()[-1].split()[0:])
+    # print onemin
+    # print fivemin
+    # print tenmin
+    res = str(localtime) + "   " + str(tot_m) + "   " + str(used_m) + "   " + str(free_m) + "   " + str(nproc) + "       " + str(onemin) + "     " + str(fivemin) + "      " + str(tenmin)
+    writefile("processutilization.result", res)
+
+
+
 def main(argv):
     parser = argparse.ArgumentParser("Program for measuring the memory,cpu")
     parser.add_argument("-p", "--pid", required=False,
@@ -85,7 +107,10 @@ def main(argv):
     print args
     if args.pid:
         pid_rt = RepeatedTimer(args.interval, pid_measure, args.pid)
-    sys_rt = RepeatedTimer(args.interval, cpu_measure, args.interval)
+    sys_rt = RepeatedTimer(args.interval, cpu_measure2)
+    hdr = "Time                 Tot_M   Used_M  Free_M   Num_P  1minLoad   5minLoad  10minLoad"
+    writefile("processutilization.result", hdr)
+
 
     try:
         sleep(args.duration)
