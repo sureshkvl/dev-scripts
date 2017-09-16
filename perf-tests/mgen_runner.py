@@ -33,18 +33,19 @@ def write_mgen_file(args):
     # clean up the exisitng files
     os.remove(fname)
     os.remove(oname)
-    # 0.0 ON 1 UDP DST 10.24.0.3/5001 PERIODIC [1000 1240]
+    # 0.0 ON 1 UDP SRC 5001  DST 10.24.0.3/5001 PERIODIC [1000 1240]
     # 60.0OFF 1
     flowno = 1
+    portno = 1000
     for i in range(0, int(args.flows)):
-        d = "0.0 ON "+ str(flowno) + " UDP DST " + str(args.server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec)+ " "+ str(args.pkt_size)+ "] " 
+        d = "0.0 ON "+ str(flowno) + " UDP SRC " + str(portno+flowno) +" DST " + str(args.server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec)+ " "+ str(args.pkt_size)+ "] " 
         writefile(fname,d)
         flowno = flowno + 1
     
     if args.flows_increase_step:
         for i in range(1, int(args.duration)):
             for f in range(0, int(args.flows_increase_step)):
-                d = str(i) + ".0 ON "+ str(flowno) + " UDP DST " + str(args.server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec) + " "+ str(args.pkt_size)+ "] " 
+                d = str(i) + ".0 ON "+ str(flowno) + " UDP SRC " + str(portno+flowno) +" DST " + str(args.server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec) + " "+ str(args.pkt_size)+ "] " 
                 writefile(fname,d)
                 flowno = flowno + 1
 
@@ -57,7 +58,7 @@ def main(argv):
     parser.add_argument("--server-ip", required=True, help="Input Server IP")
     parser.add_argument("--server-port", required=True, help="Server Port")
     parser.add_argument("--duration", required=True, help="Measure Duration")
-    parser.add_argument("--pkt-size", required=False, default=100, help="Packet Size")
+    parser.add_argument("--pkt-size", required=False, default=64, help="Packet Size")
     parser.add_argument("--pkts-per-sec", required=False, default=1, help="Packet Size")
     parser.add_argument("--flows", required=True, help="connections Size")
     parser.add_argument("--flows-increase-step", required=False, help="connections Step")
