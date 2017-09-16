@@ -90,7 +90,7 @@ def cpu_measure2():
     # print fivemin
     # print tenmin
     res = str(localtime) + "   " + str(tot_m) + "   " + str(used_m) + "   " + str(free_m) + "   " + str(nproc) + "       " + str(onemin) + "     " + str(fivemin) + "      " + str(tenmin)
-    writefile("processutilization.result", res)
+    writefile("cpumeasure.result", res)
 
 
 
@@ -109,7 +109,7 @@ def main(argv):
         pid_rt = RepeatedTimer(args.interval, pid_measure, args.pid)
     sys_rt = RepeatedTimer(args.interval, cpu_measure2)
     hdr = "Time                 Tot_M   Used_M  Free_M   Num_P  1minLoad   5minLoad  10minLoad"
-    writefile("processutilization.result", hdr)
+    writefile("cpumeasure.result", hdr)
 
 
     try:
