@@ -23,9 +23,10 @@ def process_mgen_output():
 def run_mgen_test(filenames):
     #mgen input input.mgen txlog output outputtx.log
     for fname in filenames:
-        retcode = subprocess.call(["mgen", "input", fname, "txlog", "output", oname , "&"])
-        print retcode
-        return
+        #retcode = subprocess.call(["mgen", "input", fname,  "&"])
+        p1 = subprocess.Popen(["mgen", "input", fname, "nolog"])
+        print p1
+    return
 
 def writefile(filename, data):
     file = open(filename, "a")
@@ -109,7 +110,7 @@ def main(argv):
         for p in range(0, q):
             filename = "input" + str(p) +".mgen"
             filenames.append(filename)
-            write_mgen_file(args, filename, current_flow_no, current_src_port_no, FLOWS_PER_PROCESS, args.flows_per_sec )
+            write_mgen_file(args, filename, current_flow_no, current_src_port_no, FLOWS_PER_PROCESS, int(args.flows_per_sec)/q )
             current_flow_no = current_flow_no + FLOWS_PER_PROCESS
             current_src_port_no = current_src_port_no + FLOWS_PER_PROCESS
         print filenames
