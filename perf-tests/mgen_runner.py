@@ -37,11 +37,12 @@ def writefile(filename, data):
 def write_mgen_file(args, fname, flowseqno, srcportno, totalflows, flowpersec):
     # 0.0 ON 1 UDP SRC 5001  DST 10.24.0.3/5001 PERIODIC [1000 1240]
     # 60.0OFF 1
+    writefile(fname, "TXBUFFER 999999999999")
     iteration = int(totalflows) / int(flowpersec)
     flowno = flowseqno
     for i in range(0, iteration):
         for f in range (0, int(flowpersec)):
-            d = str(i) + ".0 ON "+ str(flowno) + " UDP SRC " + str(srcportno) + " DST " + str(args.server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec)+ " "+ str(args.pkt_size)+ "] " 
+            d = str(i) + ".0 ON "+ str(flowno) + " " + args.protocol + " SRC " + str(srcportno) + " DST " + str(args.server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec)+ " "+ str(args.pkt_size)+ "] " 
             flowno = flowno+1
             srcportno = srcportno + 1
             # print d
@@ -89,6 +90,8 @@ def main(argv):
     parser.add_argument("--duration", required=True, help="Measure Duration")
     parser.add_argument("--pkt-size", required=False, default=64, help="Packet Size")
     parser.add_argument("--pkts-per-sec", required=False, default=1, help="Packet Size")
+    parser.add_argument("--protocol", required=False, default="UDP", help="Protocol[UDP/TCP]")
+
     #parser.add_argument("--flows", required=True, help="connections Size")
     #parser.add_argument("--flows-increase-step", required=False, help="connections Step")
     parser.add_argument("--total-flows", required=True, help="connections Size")

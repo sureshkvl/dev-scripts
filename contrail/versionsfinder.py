@@ -130,7 +130,7 @@ def vouter_version(analytics_ip):
         vr_agent = vrdata["VrouterAgent"]
         result.append({
             "vrouter-agent": vr_agent["build_info"],
-            "vrouter": vr_agent["vr_limits"]["vrouter_build_info"]
+            #"vrouter": vr_agent["vr_limits"]["vrouter_build_info"]
             })
     return result
 
