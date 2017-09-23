@@ -5,6 +5,7 @@ from threading import Timer
 from time import sleep
 import time
 import subprocess
+import shutil
 """
 python mgen-client.py -- server-ip 10.0.1.3 --server-port 5000  --duration 600 --pkt-size 64 \
       --connections 1000  --connections-step 1000
@@ -34,7 +35,7 @@ def writefile(filename, data):
     file.write("\n")
     file.close()
 
-def write_mgen_file(args, fname, flowseqno, srcportno, totalflows, flowpersec):
+def write_mgen_file(args, fname, flowseqno, srcportno, totalflows, flowpersec, server_ip):
     # 0.0 ON 1 UDP SRC 5001  DST 10.24.0.3/5001 PERIODIC [1000 1240]
     # 60.0OFF 1
     writefile(fname, "TXBUFFER 999999999999")
@@ -42,7 +43,7 @@ def write_mgen_file(args, fname, flowseqno, srcportno, totalflows, flowpersec):
     flowno = flowseqno
     for i in range(0, iteration):
         for f in range (0, int(flowpersec)):
-            d = str(i) + ".0 ON "+ str(flowno) + " " + args.protocol + " SRC " + str(srcportno) + " DST " + str(args.server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec)+ " "+ str(args.pkt_size)+ "] " 
+            d = str(i) + ".0 ON "+ str(flowno) + " " + args.protocol + " SRC " + str(srcportno) + " DST " + str(server_ip) + "/" + str(args.server_port) + " PERIODIC ["+ str(args.pkts_per_sec)+ " "+ str(args.pkt_size)+ "] " 
             flowno = flowno+1
             srcportno = srcportno + 1
             # print d
@@ -85,7 +86,7 @@ def write_mgen_file(args):
 
 def main(argv):
     parser = argparse.ArgumentParser("Program for measuring the memory,cpu")
-    parser.add_argument("--server-ip", required=True, help="Input Server IP")
+    parser.add_argument("--server-ip", required=True, help="Input Server IP",action="append")
     parser.add_argument("--server-port", required=True, help="Server Port")
     parser.add_argument("--duration", required=True, help="Measure Duration")
     parser.add_argument("--pkt-size", required=False, default=64, help="Packet Size")
@@ -95,30 +96,39 @@ def main(argv):
     #parser.add_argument("--flows", required=True, help="connections Size")
     #parser.add_argument("--flows-increase-step", required=False, help="connections Step")
     parser.add_argument("--total-flows", required=True, help="connections Size")
-    parser.add_argument("--flows-per-sec", required=False, help="connections Step")
+    parser.add_argument("--flows-per-sec", required=True, help="connections Step")
     args = parser.parse_args(argv[1:])
     print args
+ 
+    directory = "mgen"
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
+    os.makedirs(directory)
     filenames = []
-    if int(args.total_flows) <= FLOWS_PER_PROCESS:
-        filename = "input0.mgen"
-        filenames.append(filename)
-        write_mgen_file(args, filename, FLOW_NO, SRC_PORT_NO, args.total_flows, args.flows_per_sec )
-    else:
-        q = int(args.total_flows) / FLOWS_PER_PROCESS
-        r = int(args.total_flows) % FLOWS_PER_PROCESS
-
-        current_flow_no = FLOW_NO
-        current_src_port_no = SRC_PORT_NO
-
-        for p in range(0, q):
-            filename = "input" + str(p) +".mgen"
+    fileindex = 0
+    for server in args.server_ip:
+        if int(args.total_flows) <= FLOWS_PER_PROCESS:
+            filename = directory +"/input"+ str(fileindex) +".mgen"
             filenames.append(filename)
-            write_mgen_file(args, filename, current_flow_no, current_src_port_no, FLOWS_PER_PROCESS, int(args.flows_per_sec)/q )
-            current_flow_no = current_flow_no + FLOWS_PER_PROCESS
-            current_src_port_no = current_src_port_no + FLOWS_PER_PROCESS
-        print filenames
+            write_mgen_file(args, filename, FLOW_NO, SRC_PORT_NO, args.total_flows, args.flows_per_sec, server )
+            fileindex +=1
+        else:
+            q = int(args.total_flows) / FLOWS_PER_PROCESS
+            r = int(args.total_flows) % FLOWS_PER_PROCESS
+
+            current_flow_no = FLOW_NO
+            current_src_port_no = SRC_PORT_NO
+
+            for p in range(0, q):
+                filename = directory +"/input"+ str(fileindex) +".mgen"
+                fileindex +=1
+                filenames.append(filename)
+                write_mgen_file(args, filename, current_flow_no, current_src_port_no, FLOWS_PER_PROCESS, int(args.flows_per_sec)/q , server)
+                current_flow_no = current_flow_no + FLOWS_PER_PROCESS
+                current_src_port_no = current_src_port_no + FLOWS_PER_PROCESS
+    print filenames
     run_mgen_test(filenames)
     #process_mgen_output()
-
+    
 if __name__ == '__main__':
     main(sys.argv)
